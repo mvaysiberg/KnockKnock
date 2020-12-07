@@ -183,6 +183,7 @@ void chat(int connfd){
 					if (!gotPipe && digit != '|'){
 						//format error
 						handleFormatError(connfd, i, 0);
+						return;
 					}else if (!gotPipe && digit == '|') {
 						gotPipe = 1;
 						//received pipe ending the length
@@ -195,6 +196,7 @@ void chat(int connfd){
 						//did not receive integer data in length
 						//format error
 						handleFormatError(connfd, i, 0);
+						return;
 					}
 				} else if (got == 0 || got == -1){
 					//connection closed
@@ -224,6 +226,7 @@ void chat(int connfd){
 		}else{
 			//first three chars not message type, format error
     		handleFormatError(connfd, i,0);
+			return;
 
 		}
 	}
