@@ -5,7 +5,8 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/socket.h> 
-#include <sys/types.h> 
+#include <sys/types.h>
+#include <arpa/inet.h>
 
 void chat(int sockfd) {
 	char message[80];

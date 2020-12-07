@@ -122,7 +122,8 @@ char* makeJoke(int i){
 	int jokeLen = strlen(jokeMessage);
 	char* formatMessage = malloc(3 + 1+ (floor(log10(jokeLen)) + 1) + 1 +  jokeLen + 1 + 1);
 	strcpy(formatMessage, "REG|");
-	itoa(jokeLen, formatMessage + 4, 10);
+	//itoa(jokeLen, formatMessage + 4, 10);
+	sprintf(formatMessage + 4, "%d", jokeLen);
 	strcat(formatMessage, "|");
 	strcat(formatMessage, jokeMessage);
 	strcat(formatMessage, "|");
