@@ -4,7 +4,8 @@
 #include <stdlib.h> 
 #include <string.h> 
 #include <sys/socket.h> 
-#include <sys/types.h> 
+#include <sys/types.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <math.h>
 
@@ -26,7 +27,7 @@ int main(int argc, char* argv[]){
 	struct sockaddr_in servaddr;
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 	if (sockfd == -1) { 
-		printf("socket creation failed\n"); 
+		printf("Socket creation failed\n"); 
 		exit(0); 
 	}
 	else {
@@ -221,7 +222,7 @@ void chat(int connfd){
 
 		}else{
 			//first three chars not message type, format error
-    		handleErrorFormat(connfd, i,0);
+    		handleFormatError(connfd, i,0);
 
 		}
 	}
