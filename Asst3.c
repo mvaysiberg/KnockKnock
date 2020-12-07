@@ -99,7 +99,7 @@ char*  handleMessage(char* message, int i, int length) {
 	else if (i == 2 && strlen(message) !=length){
 		return "M5LN";
 	}
-	else if(i == 2 && !isPunctuation(message[length -1]) {
+	else if(i == 2 && !isPunctuation(message[length -1])) {
 		return "M5CT";
 	}
 	else {
@@ -170,8 +170,8 @@ void chat(int connfd){
 			}
 			printf("Received error message: %s\n", errMsg + 1);
 			return;
-		}else if (strcmp(header, "REG") == 0)){
-			int length = 0
+		}else if (strcmp(header, "REG") == 0){
+			int length = 0;
 			char digit;
 			int gotPipe = 0;
 			while (1){
@@ -211,7 +211,7 @@ void chat(int connfd){
 				received += status;
 			}
 			message[received] = '\0';
-			char* status = handleMessage(message, i);
+			char* status = handleMessage(message, i,length);
 			if(strcmp(status, "good") != 0) {
 				char* error = makeError(status);
 				write(connfd, error, 9);
