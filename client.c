@@ -21,6 +21,7 @@ void chat(int sockfd) {
 			write(sockfd, “REG|11|Who’s there|”, 19);
 		}*/	
 		char input[80];
+		bzero(input, sizeof(input));
 		fgets(input,80, stdin);
 		write(sockfd, input, strlen(input));
 	}

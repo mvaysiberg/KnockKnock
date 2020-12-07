@@ -175,6 +175,7 @@ void chat(int connfd){
 				received += status;
 			}
 			printf("Received error message: %s\n", errMsg + 1);
+			free(errMsg);
 			return;
 		}else if (strcmp(header, "REG") == 0){
 			int length = 0;
@@ -208,6 +209,7 @@ void chat(int connfd){
 			}
 			printf("MESSAGE LENGTH: %d\n", length);
 			char* message = malloc(length + 1);
+			bzero(message, length + 1);
 			received = 0;
 			while (1){
 				int status = read(connfd, message + received, 1); 
