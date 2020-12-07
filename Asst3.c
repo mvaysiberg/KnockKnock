@@ -146,6 +146,7 @@ void chat(int connfd){
 
 	for(int i =  0; i < 3;++i) {
 		//parse header
+		printf("%d\n", i);
 		char* jokeMessage = makeJoke(i);
 		int jokeLen = strlen(jokeMessage);
 		write(connfd, jokeMessage, jokeLen);
@@ -235,7 +236,7 @@ void chat(int connfd){
 
 void handleFormatError(int connfd, int i, int errType) {
     int errNum = 2* i + 1;
-    char errChar = errNum - '0';
+    char errChar = errNum + '0';
     char errCode[5];
     errCode[0] = 'M';
     errCode[1] =errChar;
