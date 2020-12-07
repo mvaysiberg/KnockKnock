@@ -161,6 +161,7 @@ void chat(int connfd){
 				received += status;
 
 		}
+		printf("HEADER: %s\n", header);
 		if(strcmp(header, "ERR") == 0){
 			//handle error
 			char* errMsg = malloc(6);
@@ -205,11 +206,13 @@ void chat(int connfd){
 					return;
 				}
 			}
+			printf("MESSAGE LENGTH: %d\n", length);
 			char* message = malloc(length + 1);
 			received = 0;
 			while (1){
-				int status = read(connfd, message + received, length - received); 
-				if (status == -1){
+				int status = read(connfd, message + received, 1); 
+				//printf("%s\n",  message);
+				if (status == -1 || status == 0){
 					//connection closed
 					return;
 				}else if (message[received] == '|'){
@@ -218,7 +221,9 @@ void chat(int connfd){
 				received += status;
 			}
 			message[received] = '\0';
+			printf("Recieved Message: %s", message);
 			char* status = handleMessage(message, i,length);
+			free(message);
 			if(strcmp(status, "good") != 0) {
 				char* error = makeError(status);
 				write(connfd, error, 9);
