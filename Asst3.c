@@ -23,7 +23,8 @@ int main(int argc, char* argv[]){
 	    printf("Must specify one port\n");
 	    exit(0);
     }
-	int sockfd, connfd, len;
+	int sockfd, connfd;
+	socklen_t len;
 	struct sockaddr_in servaddr;
 	sockfd = socket(AF_INET, SOCK_STREAM, 0); 
 	if (sockfd == -1) { 

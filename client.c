@@ -14,7 +14,7 @@ void chat(int sockfd) {
 		bzero(message, sizeof(message));
 		read(sockfd, message, sizeof(message)); 
 		printf("Received: %s\n", message);
-		if (strncmp(message, "ERR", 3)){
+		if (strncmp(message, "ERR", 3) == 0){
             return;
         }
         /*if(i == 0) {
