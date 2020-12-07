@@ -9,7 +9,7 @@
 #include <math.h>
 
 int isPunctuation(char c);
-char*  handleMessage(char* message, int i, int length);
+char* handleMessage(char* message, int i, int length);
 char* makeJoke(int i);
 char* makeError(char* error);
 char* makeError(char* error);void chat(int connfd);
@@ -37,7 +37,7 @@ int main(int argc, char* argv[]){
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
 	servaddr.sin_port = htons((unsigned short)atoi(argv[1])); 
 
-    if ((bind(sockfd, (struct sockaddr )&servaddr, sizeof(servaddr))) != 0) { 
+    if ((bind(sockfd, (struct sockaddr* )&servaddr, sizeof(servaddr))) != 0) { 
 		printf("Socket failed to bind\n"); 
 		exit(0); 
 	} 
