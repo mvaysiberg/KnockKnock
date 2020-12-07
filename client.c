@@ -46,7 +46,7 @@ int main(int argc, char* argv[]){
     servaddr.sin_family = AF_INET; 
 	servaddr.sin_addr.s_addr = inet_addr("127.0.0.1"); 
 	servaddr.sin_port = htons((unsigned short)atoi(argv[1])); 
-    if (connect(sockfd, (struct sockaddr)&servaddr, sizeof(servaddr)) != 0) { 
+    if (connect(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr)) != 0) { 
 		printf("connection with the server failed...\n"); 
 		exit(0); 
 	} 

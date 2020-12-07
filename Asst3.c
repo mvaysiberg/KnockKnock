@@ -13,6 +13,7 @@ char* handleMessage(char* message, int i, int length);
 char* makeJoke(int i);
 char* makeError(char* error);
 char* makeError(char* error);void chat(int connfd);
+void handleFormatError(int connfd, int i, int errType);
 
 
 int main(int argc, char* argv[]){
@@ -224,4 +225,25 @@ void chat(int connfd){
 
 		}
 	}
+}
+
+void handleFormatError(int connfd, int i, int errType) {
+    int errNum = 2* i + 1;
+    char errChar = errNum - '0';
+    char errCode[5];
+    errCode[0] = 'M';
+    errCode[1] =errChar;
+    //format error
+    if(errType == 0) {
+        strcat(&errCode[3], "FT");
+
+    }
+    //length error
+    else if(errType == 1) {
+        strcat(&errCode[3], "LN");
+        
+    }
+    char* error = makeError(errCode);
+    write(connfd, error, 9);
+    free(error);
 }
