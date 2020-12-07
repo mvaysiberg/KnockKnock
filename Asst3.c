@@ -200,49 +200,27 @@ void chat(int connfd){
 			}
 			char* message = malloc(length + 1);
 			received = 0;
-			while (received < length){
-				int status = read(connfd, message + received, length - received);
-				//NEED DifFERENT WAY TO CHECK if MSG IS SHORTER THAN LEN
-				//https://stackoverflow.com/questions/30067822/knowing-when-client-has-finished-reading-from-the-socket-in-c 
+			while (1){
+				int status = read(connfd, message + received, length - received); 
 				if (status == -1){
 					//connection closed
 					return;
-				}else if (status == 0){
+				}else if (message[received] == '|'){
 					break;
 				}
 				received += status;
 			}
 			message[received] = '\0';
-			//INFINITELY BLOCKED NEED TO FIX
-			int got = read(connfd, &digit, 1);
-			if (got == 1){
-				if(digit != '|'){
-					//error (should be pipe to end message)
-					//length error
-					handleFormatError(connfd, i, 1);
-				}
-			}else if (got == -1){
-				//connection closed
-				return;
-			}
-			else if (got == 0){
-				//format error (no last |)
-				handleFormatError(connfd, i, 0);
-			}
-			//check if there is something after the last |
-			got = read(connfd, &digit, 1);
-			if (got == 1){
-				//format error
-				handleFormatError(connfd, i, 0);
-				return;
-			}
-
 			char* status = handleMessage(message, i);
 			if(strcmp(status, "good") != 0) {
 				char* error = makeError(status);
 				write(connfd, error, 9);
 				free(error);
 			}
+
+		}else{
+			//first three chars not message type, format error
+    		handleErrorFormat(connfd, i,0);
 
 		}
 	}
