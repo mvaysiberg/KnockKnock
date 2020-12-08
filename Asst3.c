@@ -136,6 +136,7 @@ void chat(int connfd){
 	header[3] = '\0';
 
 	for(int i =  0; i < 3;++i) {
+		bzero(header, 3);
 		//parse header
 		printf("%d\n", i);
 		char* jokeMessage = makeJoke(i);
