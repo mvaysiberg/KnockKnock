@@ -244,16 +244,16 @@ void handleFormatError(int connfd, int i, int errType) {
     char errCode[5];
     errCode[0] = 'M';
     errCode[1] =errChar;
+    errCode[2] = '\0';
     //format error
     if(errType == 0) {
-        strcat(&errCode[3], "FT");
+        strcat(errCode, "FT");
 
     }
     //length error
     else if(errType == 1) {
-        strcat(&errCode[3], "LN");
+        strcat(errCode, "LN");
     }
-	errCode[4] = '\0';
     char* error = makeError(errCode);
     write(connfd, error, 9);
     free(error);
