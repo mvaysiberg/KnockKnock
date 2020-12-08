@@ -9,6 +9,7 @@
 #include <ctype.h>
 #include <math.h>
 
+char* getLine(FILE* fp);
 int isPunctuation(char c);
 char* handleMessage(char* message, int i, int length);
 char* makeJoke(int i);
@@ -16,13 +17,42 @@ char* makeError(char* error);
 char* makeError(char* error);void chat(int connfd);
 void handleFormatError(int connfd, int i, int errType);
 
+typedef struct _node{
+   char* setup;
+   char* punchline;
+   struct _node* next;
+} node;
 
 int main(int argc, char* argv[]){
 	
-	if (argc != 2){
-	    printf("Must specify one port\n");
+	if (argc != 3){
+	    printf("Must specify one port and one joke file\n");
 	    exit(0);
     }
+
+	FILE* fp = fopen(argv[2], "r");
+	if(fp == NULL) {
+        printf("error\n");
+        exit(0);
+    }
+	node* head = NULL;
+
+	while(!feof(fp)){
+		node* newNode = malloc(sizeof(node));
+		newNode->setup = getLine(fp);
+		newNode->punchline = getLine(fp);
+		//skip empty line
+		fgetc(fp);
+		if(head == NULL) {
+			head = newNode;
+			head->next = NULL;
+		}
+		else {
+			newNode->next = head;
+			head = newNode;
+		}
+	}
+
 	int sockfd, connfd;
 	socklen_t len;
 	struct sockaddr_in servaddr;
@@ -70,6 +100,27 @@ int main(int argc, char* argv[]){
     }
     close(sockfd);
 }
+
+char* getLine(FILE* fp) {
+	int maxSize = 50;
+  	char* token = malloc(maxSize);
+	char c = fgetc(fp);
+	int i = 0;
+	while(c != ‘\n’){
+    	if (i == maxSize-1){
+	        token = realloc(token, 2*maxSize);
+	        maxSize *= 2;            
+       	}
+		token[i++] = c;
+        c = fgetc(fp);
+		if(feof(fp)) {
+			break;
+		}
+	}
+ 	token[i] = '\0';
+	return token;
+}
+
 
 int isPunctuation(char c){
     return c == '.' || c == '?' || c == '!';
