@@ -23,7 +23,7 @@ void chat(int sockfd) {
 		char input[80];
 		bzero(input, sizeof(input));
 		fgets(input,80, stdin);
-		write(sockfd, input, strlen(input));
+		write(sockfd, input, strlen(input)-1);
 	}
 
 }
