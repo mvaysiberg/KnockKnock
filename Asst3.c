@@ -226,6 +226,7 @@ void chat(int connfd){
 				char* error = makeError(status);
 				write(connfd, error, 9);
 				free(error);
+				return;
 			}
 
 		}else{
