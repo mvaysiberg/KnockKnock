@@ -252,8 +252,8 @@ void handleFormatError(int connfd, int i, int errType) {
     //length error
     else if(errType == 1) {
         strcat(&errCode[3], "LN");
-        
     }
+	errCode[4] = '\0';
     char* error = makeError(errCode);
     write(connfd, error, 9);
     free(error);
