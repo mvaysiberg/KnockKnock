@@ -25,6 +25,13 @@ void chat(int sockfd) {
 		fgets(input,80, stdin);
 		write(sockfd, input, strlen(input)-1);
 	}
+	bzero(message, sizeof(message));
+                read(sockfd, message, sizeof(message));
+                printf("Received: %s\n", message);
+                if (strncmp(message, "ERR", 3) == 0){
+            return;
+        }
+
 
 }
 
