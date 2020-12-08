@@ -76,30 +76,21 @@ int isPunctuation(char c){
 }
 
 char*  handleMessage(char* message, int i, int length) {
-	if (i == 0 && strstr(message, "|") != NULL){
-		return "M1FT";
-	}
-	else if (i == 0 && strlen(message) !=length){
+	if (i == 0 && strlen(message) !=length){
 		return "M1LN";
 	}
 	else if(i == 0 && strcmp(message, "Who's there?") != 0) {
 		return "M1CT";
 	}
 
-	else if (i == 1 && strstr(message, "|") != NULL){
-		return "M3FT";
-	}
-	else if (i == 1 && strlen(message) !=length){
+	if (i == 1 && strlen(message) !=length){
 		return "M3LN";
 	}
 	else if(i == 1 && strcmp(message, "Dijkstra, who?") != 0) {
 		return "M3CT";
 	}
 
-	else if (i == 2 && strstr(message, "|") != NULL){
-		return "M5FT";
-	}
-	else if (i == 2 && strlen(message) !=length){
+	if (i == 2 && strlen(message) !=length){
 		return "M5LN";
 	}
 	else if(i == 2 && !isPunctuation(message[length -1])) {
@@ -158,7 +149,7 @@ void chat(int connfd){
 				//connection closed
 				return;
 			}
-				received += status;
+			received += status;
 
 		}
 		printf("HEADER: %s\n", header);
@@ -219,6 +210,10 @@ void chat(int connfd){
 					return;
 				}else if (message[received] == '|'){
 					break;
+				}
+				else if(length == received) {
+					handleFormatError(connfd, i, 1);
+					return;
 				}
 				received += status;
 			}
