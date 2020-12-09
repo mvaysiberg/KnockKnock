@@ -156,7 +156,7 @@ char*  handleMessage(char* message, int i, int length, node* randomJoke) {
 	if (i == 1 && strlen(message) !=length){
 		return "M3LN";
 	}
-	else if(i == 1 && !(strncmp(message,randomJoke->setup,strlen(randomJoke->setup)) == 0 && strcmp(message + strlen(randomJoke->setup), ", who?") == 0)) {
+	else if(i == 1 && !(strncmp(message,randomJoke->setup,strlen(randomJoke->setup)-1) == 0 && strcmp(message + strlen(randomJoke->setup)-1, ", who?") == 0)) {
 		return "M3CT";
 	}
 
