@@ -78,9 +78,6 @@ int main(int argc, char* argv[]){
 		printf("Socket creation failed\n"); 
 		exit(0); 
 	}
-	else {
-		printf("Socket successfully created..\n"); 
-    }
 	//zero out socket address info struct
 	bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET; 
@@ -91,16 +88,10 @@ int main(int argc, char* argv[]){
 		printf("Socket failed to bind\n"); 
 		exit(0); 
 	} 
-	else {
-		printf("Socket successfully binded..\n");
-    }
 	if ((listen(sockfd, 5)) != 0) { 
 		printf("Listen failed\n"); 
 		exit(0);
 	} 
-	else {
-		printf("Server listening..\n");
-    }
 	len = sizeof(servaddr); 
 	
     while(1) {
@@ -111,9 +102,6 @@ int main(int argc, char* argv[]){
 		    printf("Server failed to accept\n"); 
 		    exit(0); 
 	    } 
-	    else {
-		    printf("server accept the client...\n");
-        }
         chat(connfd,randomJoke);
         close(connfd);
     }

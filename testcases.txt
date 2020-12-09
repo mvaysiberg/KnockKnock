@@ -1,0 +1,38 @@
+1. Client sends REG|12|Who’s there.|
+    Server replies: ERR|M1CT|
+    This checks for content incorrectness
+2. Client sends REG|12|Who’s there|
+	Server replies ERR|M1LN|
+	This checks for when the message is shorter than the given length
+3. Client sends REG|12|Who’s there?A|
+	Server replies ERR|M1LN|
+	This checks for when the message is longer than the given length
+4. Client sends REG|Twelve|Who’s there?|
+	Server replies ERR|M1FT|
+	This checks for when the length is not numeric
+5. Client sends REG12|Who’s there?|
+	Server replies ERR|M1FT|
+	This checks for the pipe after the message code
+6. Client sends REG|12Who’s there?|
+    Server replies ERR|M1FT|
+	This checks for the pipe after the length
+7.  Client sends REG|12||Who’s there?|
+    Server replies ERR|M1LN|
+	This checks for too many pipes after length
+8.  Client sends REG|12|Who’s there?|
+	Server replies REG|9|Dijkstra.| (or some other random joke from joke file)
+	Client sends REG|14|Dijkstra, who?|
+	Server replies REG|50|That path was taking too long, so I let myself in.|
+	Client sends REG|4|Ughh|
+	Server replies ERR|M5CT|
+	This checks for punctuation after the expression of A/D/S
+9. Client sends ERR|M0CT|
+	Server prints Received message 0 content error
+    This checks for when the client sends the server an error 
+10. Client sends REG|12|Who’s there?|
+	Server replies REG|9|Dijkstra.| (or some other random joke from joke file)
+	Client sends REG|14|Dijkstra, who?|
+	Server replies REG|50|That path was taking too long, so I let myself in.|
+	Client sends REG|4|Ugh!|
+	Server closes connection with client and waits for the next.
+	This demonstrates a working joke
