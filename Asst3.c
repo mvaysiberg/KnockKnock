@@ -52,7 +52,7 @@ int main(int argc, char* argv[]){
         exit(0);
     }
 	node* head = NULL;
-	int jokes = -1;
+	int jokes = 0;
 	while(!feof(fp)){
 		++jokes;
 		node* newNode = malloc(sizeof(node));
@@ -114,7 +114,7 @@ int main(int argc, char* argv[]){
 	    else {
 		    printf("server accept the client...\n");
         }
-        chat(connfd);
+        chat(connfd,randomJoke);
         close(connfd);
     }
     close(sockfd);
@@ -209,7 +209,7 @@ void chat(int connfd, node* randomJoke){
 		bzero(header, 3);
 		//parse header
 		printf("%d\n", i);
-		char* jokeMessage = makeJoke(i);
+		char* jokeMessage = makeJoke(i, randomJoke);
 		int jokeLen = strlen(jokeMessage);
 		write(connfd, jokeMessage, jokeLen);
 		free(jokeMessage);
@@ -297,7 +297,7 @@ void chat(int connfd, node* randomJoke){
 			}
 			message[received] = '\0';
 			printf("Recieved Message: %s", message);
-			char* status = handleMessage(message, i,length);
+			char* status = handleMessage(message, i,length,randomJoke);
 			free(message);
 			if(strcmp(status, "good") != 0) {
 				char* error = makeError(status);
