@@ -123,7 +123,7 @@ char* getLine(FILE* fp) {
   	char* token = malloc(maxSize);
 	char c = fgetc(fp);
 	int i = 0;
-	while(c != ‘\n’){
+	while(c != '\n'){
     	if (i == maxSize-1){
 	        token = realloc(token, 2*maxSize);
 	        maxSize *= 2;            
