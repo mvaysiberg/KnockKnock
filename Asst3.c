@@ -70,8 +70,6 @@ int main(int argc, char* argv[]){
 		}
 	}
 	srand(time(NULL));
-	int jokeNum = rand() % jokes;
-	node* randomJoke = getJoke(head, jokeNum);
 	int sockfd, connfd;
 	socklen_t len;
 	struct sockaddr_in servaddr;
@@ -106,6 +104,8 @@ int main(int argc, char* argv[]){
 	len = sizeof(servaddr); 
 	
     while(1) {
+		int jokeNum = rand() % jokes;
+		node* randomJoke = getJoke(head, jokeNum);
         connfd = accept(sockfd, NULL, &len); 
 	    if (connfd < 0) { 
 		    printf("Server failed to accept\n"); 
