@@ -8,14 +8,16 @@
 #include <unistd.h>
 #include <ctype.h>
 #include <math.h>
+#include <time.h>
 
 char* getLine(FILE* fp);
 int isPunctuation(char c);
-char* handleMessage(char* message, int i, int length);
-char* makeJoke(int i);
+char* handleMessage(char* message, int i, int length, node* randomJoke);
+char* makeJoke(int i, node* randomJoke);
 char* makeError(char* error);
-char* makeError(char* error);void chat(int connfd);
+void chat(int connfd, node* randomJoke);
 void handleFormatError(int connfd, int i, int errType);
+node* getJoke(node* head, int i);
 
 typedef struct _node{
    char* setup;
@@ -48,8 +50,9 @@ int main(int argc, char* argv[]){
         exit(0);
     }
 	node* head = NULL;
-
+	int jokes = -1;
 	while(!feof(fp)){
+		++jokes;
 		node* newNode = malloc(sizeof(node));
 		newNode->setup = getLine(fp);
 		newNode->punchline = getLine(fp);
@@ -64,7 +67,9 @@ int main(int argc, char* argv[]){
 			head = newNode;
 		}
 	}
-
+	srand(time(NULL));
+	int jokeNum = rand() % jokes;
+	node* randomJoke = getJoke(head, jokeNum);
 	int sockfd, connfd;
 	socklen_t len;
 	struct sockaddr_in servaddr;
@@ -138,7 +143,7 @@ int isPunctuation(char c){
     return c == '.' || c == '?' || c == '!';
 }
 
-char*  handleMessage(char* message, int i, int length) {
+char*  handleMessage(char* message, int i, int length, node* randomJoke) {
 	if (i == 0 && strlen(message) !=length){
 		return "M1LN";
 	}
@@ -149,7 +154,7 @@ char*  handleMessage(char* message, int i, int length) {
 	if (i == 1 && strlen(message) !=length){
 		return "M3LN";
 	}
-	else if(i == 1 && strcmp(message, "Dijkstra, who?") != 0) {
+	else if(i == 1 && !(strncmp(message,randomJoke->setup,strlen(randomJoke->setup)) == 0 && strcmp(message + strlen(randomJoke->setup), ", who?") == 0)) {
 		return "M3CT";
 	}
 
@@ -165,14 +170,14 @@ char*  handleMessage(char* message, int i, int length) {
 
 } 
 
-char* makeJoke(int i){
+char* makeJoke(int i, node* randomJoke){
 	char* jokeMessage;
 	if (i == 0){
 		jokeMessage = "Knock, knock.";
 	}else if (i == 1){
-		jokeMessage = "Dijkstra.";
+		jokeMessage = randomJoke->setup;
 	}else if (i == 2){
-		jokeMessage = "That path was taking too long, so I let myself in.";
+		jokeMessage = randomJoke->punchline;
 	}
 	int jokeLen = strlen(jokeMessage);
 	char* formatMessage = malloc(3 + 1+ (floor(log10(jokeLen)) + 1) + 1 +  jokeLen + 1 + 1);
@@ -194,7 +199,7 @@ char* makeError(char* error){
     return formatError;
 }
 
-void chat(int connfd){
+void chat(int connfd, node* randomJoke){
 	char header[4];
 	header[3] = '\0';
 
@@ -327,4 +332,15 @@ void handleFormatError(int connfd, int i, int errType) {
     char* error = makeError(errCode);
     write(connfd, error, 9);
     free(error);
+}
+
+node* getJoke(node* head, int i){
+	for (int j = 0; j < i && head != NULL; ++j){
+		head = head->next;
+	}
+	if (head != NULL){
+		return head;
+	}else{
+		return NULL;
+	}
 }
