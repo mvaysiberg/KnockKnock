@@ -26,7 +26,9 @@ void chat(int connfd, node* randomJoke);
 void handleFormatError(int connfd, int i, int errType);
 node* getJoke(node* head, int i);
 
-
+//This function receives a port and joke file, creates a server socket, and chooses a random joke to send to a client.
+//It is assumed that the joke file is formatted correctly.
+//The following errors are checked for: correct number of inputs, a valid port number, non-empty file, and errors in the socket creation process.
 int main(int argc, char* argv[]){
 	
 	if (argc != 3){
@@ -53,6 +55,7 @@ int main(int argc, char* argv[]){
     }
 	node* head = NULL;
 	int jokes = 0;
+	//add jokes to linked list
 	while(!feof(fp)){
 		++jokes;
 		node* newNode = malloc(sizeof(node));
@@ -69,7 +72,13 @@ int main(int argc, char* argv[]){
 			head = newNode;
 		}
 	}
+	fclose(fp);
+	if (jokes == 0){
+		printf("Empty jokes file\n");
+		exit(0);
+	}
 	srand(time(NULL));
+	//create server socket
 	int sockfd, connfd;
 	socklen_t len;
 	struct sockaddr_in servaddr;
@@ -78,7 +87,6 @@ int main(int argc, char* argv[]){
 		printf("Socket creation failed\n"); 
 		exit(0); 
 	}
-	//zero out socket address info struct
 	bzero(&servaddr, sizeof(servaddr));
     servaddr.sin_family = AF_INET; 
 	servaddr.sin_addr.s_addr = htonl(INADDR_ANY); 
@@ -93,7 +101,7 @@ int main(int argc, char* argv[]){
 		exit(0);
 	} 
 	len = sizeof(servaddr); 
-	
+	//continue accepting clients
     while(1) {
 		int jokeNum = rand() % jokes;
 		node* randomJoke = getJoke(head, jokeNum);
@@ -107,7 +115,7 @@ int main(int argc, char* argv[]){
     }
     close(sockfd);
 }
-
+//This function reads a line from the joke file
 char* getLine(FILE* fp) {
 	int maxSize = 50;
   	char* token = malloc(maxSize);
@@ -128,11 +136,26 @@ char* getLine(FILE* fp) {
 	return token;
 }
 
+//This function finds the random joke in the jokes linked list
+//It is assumed that head != NULL (guaranteed by main)
+//i represents the random joke number
+node* getJoke(node* head, int i){
+	for (int j = 0; j < i && head != NULL; ++j){
+		head = head->next;
+	}
+	if (head != NULL){
+		return head;
+	}else{
+		return NULL;
+	}
+}
 
 int isPunctuation(char c){
     return c == '.' || c == '?' || c == '!';
 }
-
+//This function determines if the content of a message is formatted properly
+//It is assumed that randomJoke != NULL (guaranteed by main)
+//length is the length specified by the received message, i is the received message number
 char*  handleMessage(char* message, int i, int length, node* randomJoke) {
 	if (i == 0 && strlen(message) !=length){
 		return "M1LN";
@@ -159,7 +182,9 @@ char*  handleMessage(char* message, int i, int length, node* randomJoke) {
 	}
 
 } 
-
+//This function constructs a joke according to the KKJ application protocol.
+//It is assumed that randomJoke != NULL (guaranteed by main)
+//i is the sent message number
 char* makeJoke(int i, node* randomJoke){
 	char* jokeMessage;
 	if (i == 0){
@@ -172,15 +197,13 @@ char* makeJoke(int i, node* randomJoke){
 	int jokeLen = strlen(jokeMessage);
 	char* formatMessage = malloc(3 + 1+ (floor(log10(jokeLen)) + 1) + 1 +  jokeLen + 1 + 1);
 	strcpy(formatMessage, "REG|");
-	//itoa(jokeLen, formatMessage + 4, 10);
 	sprintf(formatMessage + 4, "%d", jokeLen);
 	strcat(formatMessage, "|");
 	strcat(formatMessage, jokeMessage);
 	strcat(formatMessage, "|");
-	//maybe need null terminator for strcat (check for makeError malloc as well)
 	return formatMessage;
-	}
-
+}
+//This function constructs an error message according to the KKJ application protocol.
 char* makeError(char* error){
     char* formatError = malloc(10);
     strcpy(formatError,"ERR|");
@@ -188,7 +211,9 @@ char* makeError(char* error){
     strcat(formatError, "|");
     return formatError;
 }
-
+//This function receives and sends messages to the client.
+//It is assumed that randomJoke != NULL (guaranteed by main).
+//Checks the following errors: read() returns 0 or -1.
 void chat(int connfd, node* randomJoke){
 	char header[4];
 	header[3] = '\0';
@@ -236,6 +261,7 @@ void chat(int connfd, node* randomJoke){
 			int length = 0;
 			char digit;
 			int gotPipe = 0;
+			//parse length
 			while (1){
 				int got = read(connfd, &digit, 1);
 				if (got == 1){
@@ -265,9 +291,9 @@ void chat(int connfd, node* randomJoke){
 			char* message = malloc(length + 1);
 			bzero(message, length + 1);
 			received = 0;
+			//parse message
 			while (1){
 				int status = read(connfd, message + received, 1); 
-				//printf("%s\n",  message);
 				if (status == -1 || status == 0){
 					//connection closed
 					return;
@@ -298,7 +324,9 @@ void chat(int connfd, node* randomJoke){
 		}
 	}
 }
-
+//This function constructs and sends an error message according to the KKJ application protocol.
+//It is assumed that errType is either 0 or 1 (guaranteed by chat)
+//i is the received message number
 void handleFormatError(int connfd, int i, int errType) {
     int errNum = 2* i + 1;
     char errChar = errNum + '0';
@@ -320,13 +348,3 @@ void handleFormatError(int connfd, int i, int errType) {
     free(error);
 }
 
-node* getJoke(node* head, int i){
-	for (int j = 0; j < i && head != NULL; ++j){
-		head = head->next;
-	}
-	if (head != NULL){
-		return head;
-	}else{
-		return NULL;
-	}
-}
