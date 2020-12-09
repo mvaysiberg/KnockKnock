@@ -30,6 +30,18 @@ int main(int argc, char* argv[]){
 	    exit(0);
     }
 
+	for (int i = 0; i < strlen(argv[1]); ++i){
+		if (!isdigit(argv[1][i])){
+			printf("Port must be numeric\n");
+			exit(0);
+		}
+	}
+	int port = atoi(argv[1]);
+	if (port <= 5000 || port >= 65536){
+		printf("Port must be in valid range\n");
+		exit(0);
+	}
+
 	FILE* fp = fopen(argv[2], "r");
 	if(fp == NULL) {
         printf("error\n");
@@ -217,7 +229,14 @@ void chat(int connfd){
 				}
 				received += status;
 			}
-			printf("Received error message: %s\n", errMsg + 1);
+			printf("Received message %c ", errMsg[2]);
+			if (errMsg[3] == 'C'){
+				printf("content error\n");
+			}else if (errMsg[3] == 'L'){
+				printf("length error\n");
+			}else if (errMsg[3] == 'F'){
+				printf("format error\n");
+			}
 			free(errMsg);
 			return;
 		}else if (strcmp(header, "REG") == 0){
