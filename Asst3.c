@@ -222,7 +222,6 @@ void chat(int connfd, node* randomJoke){
 			received += status;
 
 		}
-		printf("HEADER: %s\n", header);
 		if(strcmp(header, "ERR") == 0){
 			//handle error
 			char* errMsg = malloc(6);
@@ -275,7 +274,6 @@ void chat(int connfd, node* randomJoke){
 					return;
 				}
 			}
-			printf("MESSAGE LENGTH: %d\n", length);
 			char* message = malloc(length + 1);
 			bzero(message, length + 1);
 			received = 0;
@@ -295,7 +293,6 @@ void chat(int connfd, node* randomJoke){
 				received += status;
 			}
 			message[received] = '\0';
-			printf("Recieved Message: %s", message);
 			char* status = handleMessage(message, i,length,randomJoke);
 			free(message);
 			if(strcmp(status, "good") != 0) {
