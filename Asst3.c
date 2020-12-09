@@ -208,7 +208,6 @@ void chat(int connfd, node* randomJoke){
 	for(int i =  0; i < 3;++i) {
 		bzero(header, 3);
 		//parse header
-		printf("%d\n", i);
 		char* jokeMessage = makeJoke(i, randomJoke);
 		int jokeLen = strlen(jokeMessage);
 		write(connfd, jokeMessage, jokeLen);
