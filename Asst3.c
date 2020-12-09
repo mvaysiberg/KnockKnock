@@ -10,6 +10,13 @@
 #include <math.h>
 #include <time.h>
 
+typedef struct _node{
+   char* setup;
+   char* punchline;
+   struct _node* next;
+} node;
+
+
 char* getLine(FILE* fp);
 int isPunctuation(char c);
 char* handleMessage(char* message, int i, int length, node* randomJoke);
@@ -19,11 +26,6 @@ void chat(int connfd, node* randomJoke);
 void handleFormatError(int connfd, int i, int errType);
 node* getJoke(node* head, int i);
 
-typedef struct _node{
-   char* setup;
-   char* punchline;
-   struct _node* next;
-} node;
 
 int main(int argc, char* argv[]){
 	
